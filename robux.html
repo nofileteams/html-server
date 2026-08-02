@@ -29,11 +29,15 @@
                 0 0 40px #00bfff;
         }
 
+        /* Fixed width so the input aligns with the pattern select below;
+           button is positioned absolutely to keep the input centered */
         .input-area {
             margin-top: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
+            position: relative;
+            width: 300px;
         }
 
         .input {
@@ -80,7 +84,10 @@
                 inset 0 0 5px #00bfff;
         }
 
+        /* Positioned to the right of the input so the input stays centered */
         .send-btn {
+            position: absolute;
+            left: calc(100% + 10px);
             width: 50px;
             height: 45px;
             background: #000;
