@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Robux Code Generator</title>
+    <link rel="icon" type="image/png" href="https://nofileteams.github.io/icon.png">
+    <style>
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+        }
+
+        .title {
+            margin-top: 20px;
+            color: #00bfff;
+            font-size: 42px;
+            text-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff,
+                0 0 20px #00bfff,
+                0 0 40px #00bfff;
+        }
+
+        .input-area {
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input {
+            width: 300px;
+            height: 45px;
+            background: #000;
+            border: 2px solid #00bfff;
+            border-radius: 10px;
+            color: #00bfff;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            box-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff,
+                inset 0 0 5px #00bfff;
+        }
+
+        .input::placeholder {
+            color: #00bfff;
+            opacity: 1;
+            text-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff;
+        }
+
+        .send-btn {
+            width: 50px;
+            height: 45px;
+            background: #000;
+            border: 2px solid #00bfff;
+            border-radius: 10px;
+            color: #00bfff;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff,
+                inset 0 0 5px #00bfff;
+            text-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff;
+            transition: 0.2s;
+        }
+
+        .send-btn:hover {
+            box-shadow:
+                0 0 10px #00bfff,
+                0 0 20px #00bfff,
+                inset 0 0 10px #00bfff;
+        }
+
+        .box {
+            margin-top: 20px;
+            width: 800px;
+            height: 500px;
+            border: 2px solid #00bfff;
+            box-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff,
+                0 0 20px #00bfff;
+            background: transparent;
+            color: #00bfff;
+            padding: 10px;
+            box-sizing: border-box;
+            overflow-y: auto;
+            font-family: Consolas, monospace;
+        }
+
+        .line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 28px;
+            padding: 2px 0;
+        }
+
+        .text {
+            white-space: pre-wrap;
+            word-break: break-all;
+            flex: 1;
+        }
+
+        .copy-btn {
+            margin-left: 12px;
+            background: #000;
+            color: #00bfff;
+            border: 2px solid #00bfff;
+            border-radius: 7px;
+            padding: 3px 12px;
+            cursor: pointer;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: 0.2s;
+            box-shadow:
+                0 0 5px #00bfff,
+                inset 0 0 5px #00bfff;
+            text-shadow:
+                0 0 5px #00bfff;
+        }
+
+        .line:hover .copy-btn {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .copy-btn:hover {
+            background: #00bfff;
+            color: #000;
+            box-shadow:
+                0 0 10px #00bfff,
+                0 0 20px #00bfff,
+                inset 0 0 10px #00bfff;
+        }
+
+        .copy-btn.copied {
+            background: #00bfff;
+            color: #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title">Robux Code Generator</div>
+
+    <div class="input-area">
+        <input class="input" type="text" placeholder="count">
+        <button class="send-btn">➤</button>
+    </div>
+
+    <div class="box"></div>
+
+    <script>
+        const input = document.querySelector(".input");
+        const button = document.querySelector(".send-btn");
+        const box = document.querySelector(".box");
+
+        const chars = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+
+        function randomCode() {
+            let code = "";
+            for (let i = 0; i < 16; i++) {
+                code += chars[Math.floor(Math.random() * chars.length)];
+            }
+            return code;
+        }
+
+        async function copyText(text, btn) {
+            try {
+                await navigator.clipboard.writeText(text);
+                const original = btn.textContent;
+                btn.textContent = "Copied!";
+                btn.classList.add("copied");
+
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove("copied");
+                }, 1000);
+            } catch {
+                const textarea = document.createElement("textarea");
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand("copy");
+                document.body.removeChild(textarea);
+
+                const original = btn.textContent;
+                btn.textContent = "Copied!";
+                btn.classList.add("copied");
+
+                setTimeout(() => {
+                    btn.textContent = original;
+                    btn.classList.remove("copied");
+                }, 1000);
+            }
+        }
+
+        function generate() {
+            const count = parseInt(input.value);
+
+            box.innerHTML = "";
+
+            if (isNaN(count) || count <= 0) {
+                return;
+            }
+
+            for (let i = 0; i < count; i++) {
+                const code = randomCode();
+
+                const line = document.createElement("div");
+                line.className = "line";
+
+                const text = document.createElement("span");
+                text.className = "text";
+                text.textContent = code;
+
+                const copy = document.createElement("button");
+                copy.className = "copy-btn";
+                copy.textContent = "Copy";
+
+                copy.addEventListener("click", () => {
+                    copyText(code, copy);
+                });
+
+                line.appendChild(text);
+                line.appendChild(copy);
+                box.appendChild(line);
+            }
+        }
+
+        button.addEventListener("click", generate);
+
+        input.addEventListener("keydown", function(e) {
+            if (e.key === "Enter") {
+                generate();
+            }
+        });
+    </script>
+
+</body>
+</html>
