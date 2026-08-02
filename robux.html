@@ -60,6 +60,26 @@
                 0 0 10px #00bfff;
         }
 
+        .pattern-area {
+            margin-top: 15px;
+        }
+
+        .pattern-select {
+            width: 300px;
+            height: 45px;
+            background: #000;
+            border: 2px solid #00bfff;
+            border-radius: 10px;
+            color: #00bfff;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            box-shadow:
+                0 0 5px #00bfff,
+                0 0 10px #00bfff,
+                inset 0 0 5px #00bfff;
+        }
+
         .send-btn {
             width: 50px;
             height: 45px;
@@ -165,21 +185,41 @@
         <button class="send-btn">➤</button>
     </div>
 
+    <div class="pattern-area">
+        <select class="pattern-select">
+            <option value="1">Pattern 1 (################)</option>
+            <option value="2">Pattern 2 (RI-####-####-####-####)</option>
+        </select>
+    </div>
+
     <div class="box"></div>
 
     <script>
         const input = document.querySelector(".input");
         const button = document.querySelector(".send-btn");
         const box = document.querySelector(".box");
+        const patternSelect = document.querySelector(".pattern-select");
 
         const chars = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-        function randomCode() {
-            let code = "";
-            for (let i = 0; i < 16; i++) {
-                code += chars[Math.floor(Math.random() * chars.length)];
+        function randomChar() {
+            return chars[Math.floor(Math.random() * chars.length)];
+        }
+
+        function randomBlock(length) {
+            let result = "";
+            for (let i = 0; i < length; i++) {
+                result += randomChar();
             }
-            return code;
+            return result;
+        }
+
+        function randomCode() {
+            if (patternSelect.value === "1") {
+                return randomBlock(16);
+            }
+
+            return `RI-${randomBlock(4)}-${randomBlock(4)}-${randomBlock(4)}-${randomBlock(4)}`;
         }
 
         async function copyText(text, btn) {
